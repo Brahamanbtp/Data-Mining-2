@@ -1,0 +1,36 @@
+# Load necessary libraries
+library(ClusterR)
+library(cluster)
+
+# Load your dataset (replace with the actual path to your CSV file)
+dataset_path <- "C:/Users/braha/OneDrive/Desktop/Cardiovascular_Disease_Dataset.csv"
+cardio_data <- read.csv(dataset_path, stringsAsFactors = FALSE)
+
+# Select relevant features (numeric columns)
+# Replace '...' with actual column indices or names
+numeric_features <- cardio_data[, c("chestpain", "restingBP")]
+
+# Choose the number of clusters (k)
+k <- 3
+
+# Run K-means clustering
+set.seed(240)  # Setting seed for reproducibility
+kmeans_model <- kmeans(numeric_features, centers = k, nstart = 20)
+
+# Add cluster assignments to the original dataset
+cardio_data$cluster <- kmeans_model$cluster
+
+# Visualize the clusters
+# Replace 'feature1' and 'feature2' with actual feature names
+plot(cardio_data[c("chestpain", "restingBP")], col = kmeans_model$cluster,
+     main = "K-means Clustering for Cardiovascular Data",
+     xlab = "chestpain", ylab = "restingBP")
+
+# Print cluster centers
+print(kmeans_model$centers)
+
+# Additional visualization
+clusplot(cardio_data[, c("chestpain", "restingBP")], kmeans_model$cluster,
+         lines = 0, shade = TRUE, color = TRUE, labels = 2,
+         main = "Clustered Cardiovascular Data",
+         xlab = "chestpain", ylab = "restingBP")

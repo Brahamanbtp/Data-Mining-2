@@ -1,0 +1,37 @@
+# Load the necessary library
+library(cluster)
+
+# Read the dataset
+cardio_data <- read.csv("C:\\Users\\braha\\OneDrive\\Desktop\\Cardiovascular_Disease_Dataset.csv")
+
+# Assuming 'cardio_data' has only numerical columns for clustering
+# If not, select the numerical columns as done in your previous script
+
+# Scale the data
+scaled_data <- scale(cardio_data)
+
+# Perform CLARA clustering
+# Set the desired number of clusters
+num_clusters <- 3
+clara_result <- clara(scaled_data, k = num_clusters)
+
+# Extract the cluster assignments from the results
+cluster_assignments <- clara_result$clustering
+
+# Print the cluster assignments
+print(cluster_assignments)
+
+# Plot the clusters
+# Open a new plotting device
+dev.new()
+
+# Create a scatter plot of the scaled data colored by cluster assignment
+plot(scaled_data, col = cluster_assignments, pch = 20, main = "CLARA Clustering of Cardiovascular Disease Data",
+     xlab = "age", ylab = "oldpeak")
+
+# Add cluster medoids to the plot
+points(clara_result$medoids, col = 1:num_clusters, pch = 4, cex = 4, lwd = 2)
+
+# Add a legend to the plot
+legend('topright', legend = paste('Cluster', 1:num_clusters),
+       col = 1:num_clusters, pch = 20, title = "Clusters")

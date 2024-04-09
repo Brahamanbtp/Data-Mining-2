@@ -1,0 +1,38 @@
+# Load the necessary library
+library(cluster)
+
+# Read the dataset
+cardio_data <- read.csv("C:\\Users\\braha\\OneDrive\\Desktop\\Cardiovascular_Disease_Dataset.csv")
+
+# Select the columns you want to include in the clustering
+# For example, if you want to cluster based on 'systolic_bp' and 'diastolic_bp'
+selected_columns <- cardio_data[, c('serumcholestrol', 'maxheartrate')]
+
+# Scale the data
+scaled_data <- scale(selected_columns)
+
+# Perform PAM clustering
+# Set the desired number of clusters
+num_clusters <- 3
+pam_result <- pam(scaled_data, k = num_clusters)
+
+# Extract the cluster assignments from the results
+cluster_assignments <- pam_result$clustering
+
+# Print the clustering vector
+print(cluster_assignments)
+
+# Plot the clusters
+# Open a new plotting device
+dev.new()
+
+# Create a scatter plot of the scaled data colored by cluster assignment
+plot(scaled_data, col = cluster_assignments, pch = 20, main = "PAM Clustering of Cardiovascular Disease Data",
+     xlab = "Serum Cholestrol", ylab = "Max Heart Rate")
+
+# Add cluster medoids to the plot
+points(pam_result$medoids, col = 1:num_clusters, pch = 4, cex = 4, lwd = 2)
+
+# Add a legend to the plot
+legend('topright', legend = paste('Cluster', 1:num_clusters),
+       col = 1:num_clusters, pch = 20, title = "Clusters")

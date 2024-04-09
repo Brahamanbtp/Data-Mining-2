@@ -1,0 +1,108 @@
+> # Load necessary libraries
+> library(igraph)
+> 
+> # Read the dataset
+> data <- read.csv("C:/Users/braha/OneDrive/Desktop/Cardiovascular_Disease_Dataset.csv")
+> 
+> # Select only numeric columns for clustering
+> numeric_data <- data[sapply(data, is.numeric)]
+> 
+> # Remove rows with NAs
+> numeric_data <- na.omit(numeric_data)
+> 
+> # Scale the data
+> scaled_data <- scale(numeric_data)
+> 
+> # Set the number of nearest neighbors
+> k <- 5
+> 
+> # Compute the distance matrix
+> distance_matrix <- as.matrix(dist(scaled_data))
+> 
+> # Determine the k-nearest neighbors for each point
+> knn_list <- apply(distance_matrix, 1, order)[, 1:k]
+> 
+> # Create a matrix to store the edges
+> edges <- matrix(nrow = 0, ncol = 2)
+> 
+> # Loop through the knn list to create edges
+> for (i in 1:nrow(scaled_data)) {
++   neighbors <- knn_list[i,]
++   for (j in neighbors) {
++     edges <- rbind(edges, c(i, j))
++   }
++ }
+> 
+> # Create a graph from the edge list
+> knn_graph <- graph_from_edgelist(edges, directed = FALSE)
+> 
+> # Partition the graph into subclusters using a graph-based algorithm
+> # Here we use the walktrap community detection algorithm as an example
+> wt_communities <- cluster_walktrap(knn_graph)
+> 
+> # Convert communities to membership vector
+> subclusters <- membership(wt_communities)
+> 
+> # Merge subclusters based on dynamic modeling criteria
+> # This step would require implementing the specific merging criteria of Chameleon
+> # For simplicity, we'll assume each subcluster is a final cluster
+> final_clusters <- subclusters
+> 
+> # Plot the clusters
+> plot(scaled_data, col = final_clusters + 1, pch = 20, main = "Chameleon Clustering of Cardiovascular Disease Data",
++      xlab = "restingBP", ylab = "maxheartrate")
+> legend("topright", legend = unique(final_clusters), 
++        col = 1:length(unique(final_clusters)) + 1, pch = 20, 
++        title = "Clusters")
+> 
+> # Print the count of points in each cluster
+> cat("Count of points in each cluster:\n")
+Count of points in each cluster:
+> print(table(final_clusters))
+final_clusters
+  1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16 
+ 41  69  66  77  90  79 120  91  47  80  74  69  54  17  20   6 
+> 
+> # Print the cluster assignments
+> cat("\nCluster assignments for each point:\n")
+
+Cluster assignments for each point:
+> print(final_clusters)
+   [1] 16 16 16 16 10 10  9 10 10  8  7 12  8  3  8 11 11 10 10 13  7  7 10 10  3  3  7
+  [28] 13 10  8  9  8  5 11 13  3  8 10  2  7  7  8  7  7  3 13 10  3  7  3  7  7  7 13
+  [55]  7 12  2  6 13  7  8 11  5  3  6  3  9  3 12 11 10 15  6 14  8  5  7  5  4  7  5
+  [82]  3 12  5  6  6 10  8  4 12  7  3  6  7  4 10 12  6  7 12 11  7  7  7  3  6  8 12
+ [109] 12  8  5  7  7  3  6 14  3 10  7  9 10 10 13 10  3  8 10  7 12 12  8 10 12 11  5
+ [136] 13  7 13  3  6 10  1  2 11  6 11 12 10 10 11 15  5  8  6  5 10 15  7 10 11  8  9
+ [163] 11  6  6  7 10 12 10 11 13  6  7  7  3  7 12 11 11  7 11  7  7  7 11 10 13  7  3
+ [190] 11  8 12  3 10 13  8 15  3 11  5 11  8  3 11  7 13 13  8  3 11 11  6  6 12 10  8
+ [217]  9  8 11  3 12 13  3  7  8 10 12 10  5  2 11  5  9  6  3 12  7  7  8  8  7  7 13
+ [244]  8 12 14  6 13 10 12  9  5 11 12 13 10  6  2 11  7  6  3 12  8 14  8 10  4  1 12
+ [271] 11  2 10  2 12  6 13 10 10  8  5  7 10  7  7 16  4  7 13  9  7 12  9 13 12  3  6
+ [298]  3  4  8  5 13  3 10  6  5  8  3 12  7  4  2  2 11  7  8 13  7  2 11  7 13  8 10
+ [325]  5 12 11  6  9  5  9  7  4 11 14  1  5  8  3  9  5  8  2  5 10 14  8  1 12 14  8
+ [352] 15 10  8  3  4  3 12  6  8  7  5 15 10  5  4  4 12  7  4  8  7  5  9  5  7  9 10
+ [379]  6  7 10  7  3  6  6  4 13 13 12  4  7  7  7  4 11  7 11  6  5  6 10  7  9 13  3
+ [406] 12 10 15  7  7  3  3  4  8  8  6  4  5  2  4  7 12  8 10  7 13 10 11 10  7 10 13
+ [433] 15  5 10  4 14  3  7  8 16  6  3  9 12  8  5 10 10 10  6  8 12 10  6  3  7  6  1
+ [460]  9  8  6  4  7  7 15 12  3  3  3  6  8  8 12  8  8 13  9  7  6 10  2 12  9  6  9
+ [487]  7  6  1 12 15  5  8 13  5 13  7 15  5  8 10  4  8  9  8 10  4 13  9 12  7  1 11
+ [514]  7 11 12 10 13  3  7  6  5 11 12  6  8  6  5  7  8 11  5 12  7  4  3 10  8 11 10
+ [541]  4  1  1  8 11 11 11  6  6  3  6  4  7  7  8  9  5  8 14 11 11 12 12  3  5 10 11
+ [568]  3  4 13  9  3  6 14  7 10  7  2  7  7  5  3 11 13  1  5  6  7  3  7  6  7  8  1
+ [595] 13  5  7 13  7 11  5 12  2  4 12 14 10 13  8 14  5  3 15  5  7  7 13 11 11  9 13
+ [622]  3 15  5 13  9  5 15  8 10  4  4  3 12 11  5 10  6  7  7  4 13  3 10  3 10  5  9
+ [649] 11 15  7  8 13 13  5 12 12  9  4  5  7  8  6  3  8  8  5 10 11  9  2  7  1  6 11
+ [676]  5 13  1  7  5  5  8 11  9  1  7  1  7  6 10  8 15  8  5  9  1 10  2  4 11 11  9
+ [703]  5  8 10  8  4  7  8  9  5  2  1 11 14  4  4  2  8  4 13  5  5  2  8 12  8  9 12
+ [730] 12  2 14  6  4  3  4  1  4  9  1  6 14  5  8  4 11 10  4 15  6  5  5  8 12 14  7
+ [757] 11 12  2 12  6  1  1  5 11  8 12  6  1  8  4  2  1  8  4  3  7  9  1  5  5  2  7
+ [784]  5 13  6 13 12  2 13  4  5  5  5  4  3 10  2  7 11  3 15  8 12  5 10 15  2 12  1
+ [811]  5  4  2  5  3 11  9  2 11  6  9  4  5  6  2  6  3  1  2 15  8  4 12 14  6  6 10
+ [838] 12  1  6  9  2  5 11  2 12 11  5  5  7  4  8 11  1  1  4  2  4  2  5  2 10  1  6
+ [865]  2  1  5  6  2  7 11  4  3  1  8  2  2  4  4  5  5  6  6  7  7  1  9  8  4  3  2
+ [892]  8  2  6  2  5 11  9  9 13  2  7  4 13  2 11  2 11  6  5  7  4 12  9  4  6  1  7
+ [919] 10  7  2  9  8  5  7  6  1  7  4  4  2 13  2 12  7  2  7  2  2  2  5  8  8  1  1
+ [946]  4  5  6  2  9  4  2  2  1 11  5  4  4  1 11  2  4  5  4  4  2  4  6  5  2 13  2
+ [973]  5  1  2  2  4  2  1  9  5  4 12  4  4  2  6  4  4 11  4  2  2  4  2  4  6  2  6
+[1000]  2

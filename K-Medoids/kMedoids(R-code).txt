@@ -1,0 +1,52 @@
+# Loading packages
+library(cluster)
+library(ggplot2)
+
+# Read the dataset
+cardio_data <- read.csv("C:\\Users\\braha\\OneDrive\\Desktop\\Cardiovascular_Disease_Dataset.csv")
+
+# Assuming 'cardio_data' has only numerical columns for clustering
+# If not, select the numerical columns as done in your previous script
+
+# Scale the data
+scaled_data <- scale(cardio_data)
+
+# Fitting K-Medoids clustering Model to training dataset
+set.seed(240) # Setting seed for reproducibility
+kmedoids_result <- pam(scaled_data, k = 3, diss = FALSE)
+
+# Cluster identification for each observation
+clusters <- kmedoids_result$clustering
+
+# Model Evaluation and visualization
+# Plotting the clusters using the first two principal components
+pca <- prcomp(scaled_data)
+pca_data <- data.frame(pca$x[, 1:2], cluster = clusters)
+
+# Extracting the coordinates of the medoids from the original scaled data
+medoids_indices <- kmedoids_result$id.med
+if(any(medoids_indices <= 0)) {
+  stop("Medoid indices are not valid. Please check the pam object.")
+}
+
+# Extracting the medoid coordinates from the scaled data
+medoids_coords <- scaled_data[medoids_indices, ]
+
+# Transforming the medoid coordinates using the PCA rotation matrix
+medoids_pca_coords <- medoids_coords %*% pca$rotation[, 1:2]
+
+# Creating a data frame for the medoid coordinates with the correct column names
+medoids_pca_df <- data.frame(PC1 = medoids_pca_coords[, 1], PC2 = medoids_pca_coords[, 2])
+
+ggplot(pca_data, aes(x = PC1, y = PC2, color = as.factor(cluster))) +
+  geom_point(alpha = 0.7, size = 2) +  # Adjust alpha and size for better visibility
+  scale_color_brewer(palette = "Set1") +  # Enhanced color palette for contrast
+  labs(title = "K-Medoids Clustering of Cardiovascular Disease Data",
+       x = "restingBP",
+       y = "maxheartrate") +
+  geom_point(data = medoids_pca_df, 
+             aes(x = PC1, y = PC2), color = "black", size = 3, shape = 8) +
+  theme_minimal() +
+  theme(legend.position = "right")  # Adjust legend position if needed
+
+# Note: Adjust the number of clusters (k) and other parameters as necessary for your dataset.

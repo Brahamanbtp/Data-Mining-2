@@ -1,0 +1,36 @@
+> # Load necessary libraries
+> library(cluster)
+> library(dendextend)
+> 
+> # Read the dataset
+> data <- read.csv("C:/Users/braha/OneDrive/Desktop/Cardiovascular_Disease_Dataset.csv")
+> 
+> # Select only numeric columns for clustering
+> numeric_data <- data[sapply(data, is.numeric)]
+> 
+> # Remove rows with NAs
+> numeric_data <- na.omit(numeric_data)
+> 
+> # Compute the dissimilarity matrix
+> dissimilarity_matrix <- dist(numeric_data)
+> 
+> # Perform hierarchical clustering using Ward's method
+> hc <- hclust(dissimilarity_matrix, method = "ward.D2")
+> 
+> # Convert to dendrogram
+> dend <- as.dendrogram(hc)
+> 
+> # Determine the number of clusters
+> num_clusters <- length(unique(cutree(hc, k = 5)))
+> 
+> # Create a color palette with a sufficient number of colors
+> my_palette <- rainbow(num_clusters)
+> 
+> # Color branches based on the cut
+> dend <- color_branches(dend, k = 5, col = my_palette)
+> 
+> # Plot the colored dendrogram
+> plot(dend, main = "Hierarchical Clustering Dendrogram")
+> 
+> # Add colored rectangles to denote clusters
+> rect.dendrogram(dend, k = 5, border = my_palette)

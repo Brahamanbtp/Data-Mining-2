@@ -1,0 +1,30 @@
+# Load the necessary library
+library(cluster)
+
+# Read the dataset
+cardio_data <- read.csv("C:\\Users\\braha\\OneDrive\\Desktop\\Cardiovascular_Disease_Dataset.csv")
+
+# Assuming 'cardio_data' has only numerical columns for clustering
+# If not, select the numerical columns as done in your previous script
+
+# Scale the data
+scaled_data <- scale(cardio_data)
+
+# Perform AGNES clustering
+agnes_result <- agnes(scaled_data, method = "average") # You can also use other methods like 'single', 'complete', etc.
+
+# Convert AGNES object to an hclust object
+hclust_result <- as.hclust(agnes_result)
+
+# Cut the dendrogram to obtain the desired number of clusters
+num_clusters <- 3
+cluster_assignments <- cutree(hclust_result, k = num_clusters)
+
+# Print the cluster assignments
+print(cluster_assignments)
+
+# Plot the dendrogram
+plot(agnes_result, which.plots = 2, main = "Dendrogram for AGNES Clustering of Cardiovascular Disease Data")
+
+# Highlight the clusters on the dendrogram
+rect.hclust(hclust_result, k = num_clusters, border = "red")

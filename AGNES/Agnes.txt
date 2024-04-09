@@ -1,0 +1,55 @@
+> # Load the necessary library
+> library(cluster)
+> 
+> # Read the dataset
+> cardio_data <- read.csv("C:\\Users\\braha\\OneDrive\\Desktop\\Cardiovascular_Disease_Dataset.csv")
+> 
+> # Assuming 'cardio_data' has only numerical columns for clustering
+> # If not, select the numerical columns as done in your previous script
+> 
+> # Scale the data
+> scaled_data <- scale(cardio_data)
+> 
+> # Perform AGNES clustering
+> agnes_result <- agnes(scaled_data, method = "average") # You can also use other methods like 'single', 'complete', etc.
+> 
+> # Convert AGNES object to an hclust object
+> hclust_result <- as.hclust(agnes_result)
+> 
+> # Cut the dendrogram to obtain the desired number of clusters
+> num_clusters <- 3
+> cluster_assignments <- cutree(hclust_result, k = num_clusters)
+> 
+> # Print the cluster assignments
+> print(cluster_assignments)
+   [1] 1 2 2 1 1 1 1 2 2 1 1 1 2 2 2 1 1 2 1 2 1 1 2 1 1 2 2 1 1 1 2 2 1 2 1 2 1 2 2 2 1
+  [42] 1 1 1 1 2 2 2 2 2 2 1 1 1 1 1 1 1 1 2 1 1 2 2 1 1 1 1 1 2 1 1 1 2 1 1 1 2 1 1 2 2
+  [83] 2 1 2 1 1 2 1 1 2 1 2 1 1 1 1 1 2 1 2 2 2 1 1 2 1 2 1 1 1 2 1 2 2 2 1 2 1 1 1 2 2
+ [124] 2 2 2 1 2 1 1 2 2 1 1 1 2 1 1 2 2 1 2 1 2 1 1 1 1 1 2 1 1 1 2 1 2 1 1 2 1 2 1 1 1
+ [165] 1 2 2 1 1 2 1 2 2 2 1 1 1 1 2 1 2 1 1 1 2 2 1 1 1 1 1 1 1 2 2 2 1 1 1 1 1 1 1 1 2
+ [206] 1 1 1 2 1 2 1 1 2 1 1 1 2 2 2 2 1 2 1 2 1 1 2 2 1 2 2 1 2 1 1 2 2 1 1 1 1 1 2 2 1
+ [247] 2 2 1 1 2 1 1 2 2 2 1 2 2 1 1 1 1 2 1 1 1 1 1 1 2 2 1 2 1 2 2 2 1 1 1 1 1 1 1 2 1
+ [288] 1 2 1 1 2 2 2 2 2 2 1 1 2 1 1 1 2 2 1 1 2 1 1 2 1 2 1 2 2 2 1 2 1 1 1 1 1 1 1 2 1
+ [329] 2 1 1 2 2 1 2 1 2 1 1 2 2 1 1 1 2 1 1 1 1 1 2 1 2 1 2 1 1 2 2 2 1 1 2 2 1 1 2 1 2
+ [370] 1 1 2 2 2 1 1 1 2 1 1 2 1 2 1 2 2 1 1 1 2 1 2 1 2 2 1 1 2 2 2 2 2 1 2 1 1 2 1 1 1
+ [411] 1 1 1 2 1 1 1 1 2 2 2 2 2 1 1 2 1 1 2 1 1 1 1 1 2 2 1 1 1 1 1 2 2 1 2 1 1 1 2 1 1
+ [452] 1 1 1 1 2 2 1 2 2 2 1 1 2 1 2 2 2 1 2 2 1 1 1 1 1 1 2 2 1 1 1 2 1 2 1 2 2 2 1 1 2
+ [493] 2 1 2 2 1 2 2 1 2 2 2 1 2 2 1 1 2 2 2 1 2 1 1 2 1 2 1 2 1 1 2 2 1 1 2 2 1 1 1 2 1
+ [534] 1 1 2 1 2 2 1 2 1 2 2 1 1 1 1 1 1 1 1 2 2 2 1 1 2 1 1 1 1 2 2 1 1 2 1 2 1 2 1 1 2
+ [575] 1 1 2 2 2 2 1 2 1 1 2 1 1 1 1 1 1 1 2 2 1 1 2 1 2 1 1 1 1 1 2 1 2 1 2 2 1 1 2 1 1
+ [616] 2 1 2 1 1 2 1 1 1 2 1 2 2 1 2 2 1 1 1 2 1 1 2 1 2 2 2 2 2 1 1 2 1 2 2 2 1 1 1 1 1
+ [657] 1 1 1 1 2 2 1 1 2 2 1 2 1 1 1 2 1 2 2 1 2 1 2 1 1 2 2 1 1 1 2 1 2 2 1 1 2 2 1 1 2
+ [698] 1 2 1 2 2 1 1 1 1 1 1 2 1 2 2 1 2 2 1 2 2 1 1 1 1 2 2 1 1 2 1 2 2 1 2 1 1 2 1 1 2
+ [739] 2 2 2 1 2 1 1 2 1 1 1 2 1 2 1 2 2 1 2 1 2 1 1 2 1 1 1 1 2 2 2 2 1 1 2 1 1 1 1 2 2
+ [780] 2 2 2 2 1 2 1 1 1 2 1 1 2 1 2 2 1 1 2 2 2 1 2 2 1 2 2 1 1 1 1 1 2 1 2 1 1 2 1 1 2
+ [821] 2 2 1 2 1 1 1 2 1 1 2 1 1 1 1 1 1 1 2 1 1 1 2 2 2 2 2 1 1 1 1 2 1 1 1 1 2 1 2 2 2
+ [862] 2 2 2 2 1 1 2 2 1 1 2 2 2 1 1 2 1 1 1 1 2 1 1 1 1 1 1 2 1 2 1 1 2 1 1 2 1 1 1 2 2
+ [903] 2 2 2 2 1 1 1 2 1 1 1 2 2 1 2 1 2 1 1 1 1 1 2 2 2 1 1 1 2 1 1 1 1 1 2 2 1 1 1 1 1
+ [944] 2 1 2 2 1 2 1 2 2 2 1 1 1 1 1 2 1 2 1 1 1 1 2 1 2 1 2 1 2 1 1 1 2 1 2 2 1 1 2 1 1
+ [985] 2 1 1 1 2 2 1 2 1 3 2 1 2 1 1 2
+> 
+> # Plot the dendrogram
+> plot(agnes_result, which.plots = 2, main = "Dendrogram for AGNES Clustering of Cardiovascular Disease Data")
+> 
+> # Highlight the clusters on the dendrogram
+> rect.hclust(hclust_result, k = num_clusters, border = "red")
